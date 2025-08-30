@@ -4,12 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   
+  <title>Photo + Signature Combiner - Free & Private Tool</title>
+  
+  <meta name="description" content="Easily merge your photo and signature into a single image for free. Our online tool is 100% private, processing all files in your browser with no uploads required. Fast, secure, and perfect for official documents." />
+
   <link rel="icon" href="image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <title>Photo + Signature Combiner - Free & Private Tool</title>
 
   <style>
     :root {
@@ -1262,7 +1264,7 @@
 
         <div class="content-section animate-on-scroll">
           <h2>Why Choose Our Tool?</h2>
-          <p>Our photo and signature combiner is designed with your privacy and convenience in mind. Unlike other tools that upload your sensitive information to servers, our solution works entirely in your browser.</p>
+          <p>Our photo and signature combiner is designed with your privacy and convenience in mind. Unlike other tools that upload your sensitive information to servers, our solution works entirely in your browser. Read our <a href="#" class="nav-link" data-page="privacy" style="color:var(--primary); font-weight: 600;">Privacy Policy</a> to learn more.</p>
           
           <div class="benefits-grid">
             <div class="benefit-card">
@@ -1420,7 +1422,7 @@
             
             <div class="benefit-card">
               <h3><i class="fas fa-heart"></i> Our Commitment</h3>
-              <p>We're committed to maintaining this privacy-first approach. We generate revenue through ethical advertising rather than selling or using your personal data.</p>
+              <p>We're committed to maintaining this privacy-first approach. We generate revenue through ethical advertising rather than selling or using your personal data. You can read our full <a href="#" class="nav-link" data-page="privacy" style="color:var(--primary); font-weight: 600; display: inline;">Privacy Policy</a> for more details.</p>
             </div>
           </div>
         </div>
@@ -1903,7 +1905,7 @@
         </div>
         
         <div class="content-section animate-on-scroll">
-          <h2>Frequently Asked Questions</h2>
+          <h2>AR Tools - Frequently Asked Questions</h2>
           
           <div class="benefit-card">
             <h3><i class="fas fa-question-circle"></i> Is my camera feed stored anywhere?</h3>
@@ -1955,277 +1957,3 @@
           const targetPage = document.getElementById(`page-${pageName}`);
           if (targetPage) {
             targetPage.classList.add('active');
-            
-            // Update active nav link
-            document.querySelectorAll('.nav-links a').forEach(el => {
-              el.classList.remove('active');
-            });
-            
-            // Find and activate the correct nav link
-            const activeLink = document.querySelector(`.nav-link[data-page="${pageName}"]`);
-            if (activeLink) {
-              activeLink.classList.add('active');
-            }
-          } else {
-            console.error(`Page not found: ${pageName}`);
-            // Fallback to home page if page not found
-            setActivePage('home');
-          }
-        }
-        
-        // Set up navigation click handlers
-        navLinks.forEach(link => {
-          link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetPage = this.getAttribute('data-page');
-            setActivePage(targetPage);
-            
-            // Close mobile menu if open
-            document.getElementById('navLinks').classList.remove('active');
-            document.getElementById('mobileToggle').innerHTML = '<i class="fas fa-bars"></i>';
-            
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          });
-        });
-        
-        // Mobile menu toggle
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navLinksEl = document.getElementById('navLinks');
-        
-        if (mobileToggle && navLinksEl) {
-          mobileToggle.addEventListener('click', () => {
-            navLinksEl.classList.toggle('active');
-            mobileToggle.innerHTML = navLinksEl.classList.contains('active') ? 
-              '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
-          });
-        }
-        
-        // Initialize with home page
-        setActivePage('home');
-        
-        // Scroll animation
-        function animateOnScroll() {
-          const elements = document.querySelectorAll('.animate-on-scroll:not(.active)');
-          elements.forEach(el => {
-            const elementPosition = el.getBoundingClientRect().top;
-            const windowHeight = window.innerHeight;
-            
-            if (elementPosition < windowHeight * 0.85) {
-              el.classList.add('active');
-            }
-          });
-        }
-        
-        // Initial animation check
-        setTimeout(animateOnScroll, 100);
-        
-        // Set up scroll listener
-        window.addEventListener('scroll', animateOnScroll);
-        window.addEventListener('resize', animateOnScroll);
-        
-        // Main functionality for home page tool
-        const photoInput = document.getElementById("photoInput");
-        const signatureInput = document.getElementById("signatureInput");
-        const photoPreviewBox = document.getElementById("photoPreviewBox");
-        const signaturePreviewBox = document.getElementById("signaturePreviewBox");
-        const combineBtn = document.getElementById("combineBtn");
-        const loading = document.getElementById("loading");
-        const resultCanvas = document.getElementById("resultCanvas");
-        const downloadLink = document.getElementById("downloadLink");
-        const resultContainer = document.getElementById("resultContainer");
-        
-        // Only initialize tool functionality if elements exist (on home page)
-        if (photoInput && signatureInput && combineBtn) {
-          // Photo preview
-          photoInput.addEventListener("change", (e) => {
-            const file = e.target.files[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onload = (event) => {
-                photoPreviewBox.innerHTML = `<img src="${event.target.result}" alt="Photo" class="uploaded">`;
-                const img = photoPreviewBox.querySelector('img');
-                if (img) {
-                  img.addEventListener('load', () => {
-                    photoPreviewBox.classList.add('uploaded');
-                    // Add subtle animation
-                    photoPreviewBox.style.animation = 'fileUpload 0.5s ease-out';
-                    setTimeout(() => {
-                      photoPreviewBox.style.animation = '';
-                    }, 500);
-                  });
-                }
-              };
-              reader.readAsDataURL(file);
-            }
-          });
-          
-          // Signature preview
-          signatureInput.addEventListener("change", (e) => {
-            const file = e.target.files[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onload = (event) => {
-                signaturePreviewBox.innerHTML = `<img src="${event.target.result}" alt="Signature" class="uploaded">`;
-                const img = signaturePreviewBox.querySelector('img');
-                if (img) {
-                  img.addEventListener('load', () => {
-                    signaturePreviewBox.classList.add('uploaded');
-                    // Add subtle animation
-                    signaturePreviewBox.style.animation = 'fileUpload 0.5s ease-out';
-                    setTimeout(() => {
-                      signaturePreviewBox.style.animation = '';
-                    }, 500);
-                  });
-                }
-              };
-              reader.readAsDataURL(file);
-            }
-          });
-          
-          // Combine
-          combineBtn.addEventListener("click", () => {
-            const photoImg = photoPreviewBox.querySelector("img");
-            const signatureImg = signaturePreviewBox.querySelector("img");
-            
-            // Reset error states first
-            photoPreviewBox.style.borderColor = 'rgba(99, 102, 241, 0.2)';
-            signaturePreviewBox.style.borderColor = 'rgba(99, 102, 241, 0.2)';
-            
-            if (!photoImg || !signatureImg) {
-              // Animation for error state
-              combineBtn.style.animation = 'shake 0.5s';
-              setTimeout(() => {
-                combineBtn.style.animation = '';
-              }, 500);
-              
-              // Show visual feedback
-              photoPreviewBox.style.borderColor = '#f43f5e';
-              signaturePreviewBox.style.borderColor = '#f43f5e';
-              
-              setTimeout(() => {
-                photoPreviewBox.style.borderColor = 'rgba(99, 102, 241, 0.2)';
-                signaturePreviewBox.style.borderColor = 'rgba(99, 102, 241, 0.2)';
-              }, 2000);
-              
-              return;
-            }
-            
-            loading.classList.add('active');
-            combineBtn.disabled = true;
-            combineBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            combineBtn.style.transform = 'scale(1)';
-            
-            setTimeout(() => {
-              const photo = new Image();
-              const signature = new Image();
-              
-              photo.onload = function () {
-                signature.onload = function () {
-                  const maxWidth = 600;
-                  const photoWidth = Math.min(maxWidth, photo.naturalWidth);
-                  const photoHeight = (photoWidth / photo.naturalWidth) * photo.naturalHeight;
-                  const sigWidth = photoWidth;
-                  const sigRatio = signature.naturalWidth / signature.naturalHeight;
-                  const sigHeight = Math.min(100, Math.max(40, sigWidth / sigRatio));
-                  
-                  resultCanvas.width = photoWidth;
-                  resultCanvas.height = photoHeight + sigHeight;
-                  const ctx = resultCanvas.getContext("2d");
-                  ctx.fillStyle = "white";
-                  ctx.fillRect(0, 0, photoWidth, resultCanvas.height);
-                  ctx.imageSmoothingEnabled = true;
-                  ctx.imageSmoothingQuality = "high";
-                  
-                  ctx.drawImage(photo, 0, 0, photoWidth, photoHeight);
-                  ctx.drawImage(signature, 0, photoHeight, sigWidth, sigHeight);
-                  
-                  // Show result with animation
-                  resultContainer.classList.add('active');
-                  resultCanvas.style.display = "block";
-                  downloadLink.href = resultCanvas.toDataURL("image/png");
-                  downloadLink.style.display = "inline-flex";
-                  downloadLink.download = "photo-with-signature.png";
-                  
-                  // Animate download button
-                  setTimeout(() => {
-                    downloadLink.style.animation = 'pulse-download 2s infinite';
-                  }, 300);
-                  
-                  loading.classList.remove('active');
-                  combineBtn.disabled = false;
-                  combineBtn.innerHTML = '<i class="fas fa-magic"></i> Combine Now';
-                  
-                  // Scroll to result
-                  resultCanvas.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center',
-                    inline: 'nearest'
-                  });
-                };
-                signature.src = signatureImg.src;
-              };
-              photo.src = photoImg.src;
-            }, 800);
-          });
-          
-          // Add floating animation to combine button after page load
-          setTimeout(() => {
-            const combineBtn = document.querySelector('.combine-btn');
-            if (combineBtn) {
-              combineBtn.classList.add('float');
-            }
-          }, 500);
-        }
-        
-        // Handle potential errors gracefully
-      } catch (mainError) {
-        console.error('Critical error in main script:', mainError);
-        
-        // Fallback: Ensure at least home page is visible
-        try {
-          document.querySelectorAll('.page').forEach(page => {
-            page.classList.remove('active');
-          });
-          const homePage = document.getElementById('page-home');
-          if (homePage) {
-            homePage.classList.add('active');
-          }
-          
-          // Show error message in UI
-          const errorDiv = document.createElement('div');
-          errorDiv.style.cssText = `
-            position: fixed;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            color: #dc2626;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            z-index: 10000;
-            border-left: 4px solid #dc2626;
-          `;
-          errorDiv.innerHTML = `
-            <strong>Error:</strong> ${mainError.message}<br>
-            <small>Don't worry! The main functionality is still working.</small>
-          `;
-          document.body.appendChild(errorDiv);
-          
-          // Auto-hide error after 5 seconds
-          setTimeout(() => {
-            errorDiv.style.transition = 'opacity 0.5s';
-            errorDiv.style.opacity = '0';
-            setTimeout(() => {
-              errorDiv.remove();
-            }, 500);
-          }, 5000);
-        } catch (fallbackError) {
-          console.error('Fallback error:', fallbackError);
-        }
-      }
-    });
-  </script>
-</body>
-</html>
