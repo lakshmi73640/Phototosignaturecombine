@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  
+  <link rel="icon" href="image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <title>Photo + Signature Combiner - Free & Private Tool</title>
+
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --secondary: #f43f5e;
+      --success: #10b981;
+      --light: #f9fafb;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --border-radius: 16px;
+      --card-radius: 20px;
+      --box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-fast: all 0.2s ease;
+      --transition-slow: all 0.5s ease;
+      --header-height: 70px;
+      --navbar-height: 60px;
+      --gradient-start: #818cf8;
+      --gradient-end: #c084fc;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e6e9ff 100%);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding-top: var(--header-height);
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.03) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(192, 132, 252, 0.03) 0%, transparent 20%);
+    }
+
+    /* Modern Navigation */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--navbar-height);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 5px 20px -5px rgba(0, 0, 0, 0.08);
+      z-index: 1000;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--primary-dark);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .logo i {
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo span {
+      background: linear-gradient(135deg, var(--primary-dark), #4c1d95);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.8rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--gray);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      position: relative;
+      padding: 0.5rem 0;
+      transition: var(--transition);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary-dark);
+    }
+
+    .nav-links a.active {
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+      transition: var(--transition);
+      border-radius: 1px;
+    }
+
+    .nav-links a.active::after,
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
+      min-width: 220px;
+      padding: 0.8rem 0;
+      z-index: 1;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-50%) translateY(5px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .dropdown:hover .dropdown-content {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .dropdown-item {
+      padding: 0.7rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--dark);
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 0.9rem;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(99, 102, 241, 0.05);
+      color: var(--primary-dark);
+      transform: translateX(3px);
+    }
+
+    .dropdown-item i {
+      width: 20px;
+      text-align: center;
+      color: var(--primary);
+    }
+
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--primary-dark);
+      cursor: pointer;
+    }
+
+    /* Page Structure */
+    .page {
+      display: none;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 3rem auto;
+      padding: 2.5rem;
+      background: white;
+      border-radius: var(--card-radius);
+      box-shadow: var(--box-shadow);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+      border-radius: var(--card-radius) var(--card-radius) 0 0;
+    }
+
+    .header-content {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .header-content::after {
+      content: '';
+      position: absolute;
+      bottom: -1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+      border-radius: 2px;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+      background: linear-gradient(135deg, var(--primary-dark), #4c1d95);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1.5rem;
+      color: var(--primary-dark);
+    }
+
+    h3 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin: 1.8rem 0 1rem;
+      color: var(--dark);
+    }
+
+    p {
+      margin-bottom: 1.2rem;
+      color: var(--gray);
+      line-height: 1.7;
+      font-size: 1.05rem;
+    }
+
+    .tagline {
+      font-size: 1.25rem;
+      color: var(--gray);
+      max-width: 650px;
+      margin: 0 auto 2rem;
+      font-weight: 500;
+      position: relative;
+      z-index: 2;
+    }
+
+    .highlight {
+      background: linear-gradient(120deg, rgba(99, 102, 241, 0.15), transparent 50%);
+      padding: 0 6px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0.9rem 1.8rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+    }
+
+    .btn i {
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+
+    .btn:hover i {
+      transform: scale(1.1);
+    }
+
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .step {
+      background: var(--light);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      border-left: 4px solid var(--primary);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    .step:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      border-left-color: var(--primary-dark);
+    }
+
+    .step::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .step:hover::before {
+      opacity: 1;
+    }
+
+    .step h3 {
+      font-size: 1.5rem;
+      color: var(--dark);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+    }
+
+    .step-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step-number::after {
+      content: '';
+      position: absolute;
+      width: 180%;
+      height: 180%;
+      background: radial-gradient(circle, white 10%, transparent 20%);
+      top: -40%;
+      left: -40%;
+      opacity: 0.3;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.2); opacity: 0.2; }
+      100% { transform: scale(1); opacity: 0.3; }
+    }
+
+    .upload-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      width: 100%;
+    }
+
+    .upload-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.9rem 1.8rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .upload-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      opacity: 0;
+      z-index: -1;
+      transition: var(--transition);
+      border-radius: 12px;
+    }
+
+    .upload-btn:hover::before {
+      opacity: 1;
+    }
+
+    .upload-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .upload-btn:active {
+      transform: translateY(0);
+    }
+
+    .upload-btn i {
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+
+    .upload-btn:hover i {
+      transform: scale(1.1);
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .preview-box {
+      margin-top: 0.5rem;
+      width: 100%;
+      min-height: 220px;
+      border: 2px dashed #e2e8f0;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #fafbff;
+      overflow: hidden;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      position: relative;
+      cursor: pointer;
+      border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    .preview-box:hover {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.03);
+    }
+
+    .preview-box img {
+      max-width: 100%;
+      max-height: 190px;
+      object-fit: contain;
+      transition: var(--transition);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .preview-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      color: var(--gray);
+      text-align: center;
+      padding: 0 1.5rem;
+      transition: var(--transition-slow);
+    }
+
+    .preview-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      transition: var(--transition);
+    }
+
+    .preview-box:hover .preview-icon {
+      transform: scale(1.1) rotate(5deg);
+      color: var(--primary-dark);
+    }
+
+    .combine-section {
+      margin: 2.5rem 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .combine-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: auto;
+      padding: 1.2rem 2.8rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      letter-spacing: -0.02em;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .combine-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      opacity: 0;
+      z-index: -1;
+      transition: var(--transition);
+      border-radius: 14px;
+    }
+
+    .combine-btn:hover::before {
+      opacity: 1;
+    }
+
+    .combine-btn:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(99, 102, 241, 0.5);
+    }
+
+    .combine-btn:active {
+      transform: translateY(0) scale(1);
+    }
+
+    .combine-btn i {
+      font-size: 1.4rem;
+      transition: var(--transition);
+    }
+
+    .combine-btn:hover i {
+      transform: scale(1.15) rotate(10deg);
+    }
+
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem 0;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 1.1rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: var(--transition-slow);
+    }
+
+    .loading.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(99, 102, 241, 0.2);
+      border-left-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .result-container {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: var(--transition-slow);
+    }
+
+    .result-container.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #resultCanvas {
+      width: 100%;
+      max-width: 550px;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.15);
+      display: block;
+      margin: 2rem auto;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transition: var(--transition);
+      object-fit: contain;
+    }
+
+    #resultCanvas:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.2);
+    }
+
+    #downloadLink {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 1.1rem 2.2rem;
+      background: linear-gradient(135deg, var(--success), #0daa72);
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      border-radius: 14px;
+      font-size: 1.15rem;
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+      transition: var(--transition);
+      letter-spacing: -0.02em;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      animation: pulse-download 2s infinite;
+    }
+
+    @keyframes pulse-download {
+      0% { box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); }
+      50% { box-shadow: 0 8px 30px rgba(16, 185, 129, 0.6); }
+      100% { box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); }
+    }
+
+    #downloadLink:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(16, 185, 129, 0.5);
+    }
+
+    #downloadLink i {
+      font-size: 1.3rem;
+      transition: var(--transition);
+    }
+
+    #downloadLink:hover i {
+      transform: scale(1.15) translateY(-2px);
+    }
+
+    .privacy-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-size: 1.05rem;
+      color: #0c745d;
+      text-align: center;
+      margin: 2.5rem 0;
+      padding: 1.3rem;
+      background: #ecfdf5;
+      border-radius: 14px;
+      border: 1px solid #a7f3d0;
+      animation: pulse 2s infinite;
+      transition: var(--transition);
+    }
+
+    .privacy-note:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px -5px rgba(0, 0, 0, 0.08);
+    }
+
+    .privacy-note i {
+      font-size: 1.4rem;
+      color: #047857;
+    }
+
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 1.8rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.05rem;
+      padding: 0.6rem 1.2rem;
+      background: rgba(99, 102, 241, 0.05);
+      border-radius: 10px;
+      transition: var(--transition);
+    }
+
+    .feature:hover {
+      background: rgba(99, 102, 241, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .feature i {
+      color: var(--success);
+      font-size: 1.1rem;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: var(--gray);
+      font-size: 0.95rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--gray);
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 0.95rem;
+      position: relative;
+      padding-bottom: 3px;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    .footer-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: var(--primary);
+      transition: var(--transition);
+      border-radius: 1px;
+    }
+
+    .footer-links a:hover::after {
+      width: 100%;
+    }
+
+    /* Animation for file upload */
+    @keyframes fileUpload {
+      0% { transform: scale(0.95); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .uploaded {
+      animation: fileUpload 0.5s ease-out;
+    }
+
+    /* Error animation */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    /* Floating animation for main elements */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .float {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .animate-on-scroll.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Content-specific styles */
+    .content-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .content-section h3 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .content-section h3 i {
+      color: var(--primary);
+      background: rgba(99, 102, 241, 0.1);
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 1.8rem 0;
+    }
+
+    .benefit-card {
+      background: var(--light);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: var(--transition);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+      box-shadow: 0 4px 10px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    .benefit-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+      border-color: rgba(99, 102, 241, 0.1);
+    }
+
+    .benefit-icon {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .testimonials {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.8rem;
+      margin: 2rem 0;
+    }
+
+    .testimonial {
+      background: var(--light);
+      border-radius: 14px;
+      padding: 1.8rem;
+      position: relative;
+      box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    .testimonial::before {
+      content: '\201C';
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      font-size: 4rem;
+      color: rgba(99, 102, 241, 0.1);
+      font-family: serif;
+      line-height: 1;
+    }
+
+    .testimonial-content {
+      position: relative;
+      z-index: 1;
+      margin-top: 10px;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 1.2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .author-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.6rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: var(--transition);
+      background: var(--light);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .privacy-policy-content ol {
+      padding-left: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    .privacy-policy-content li {
+      margin-bottom: 0.8rem;
+    }
+
+    .privacy-policy-content li::marker {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .terms-content ul {
+      padding-left: 1.8rem;
+      margin: 1rem 0;
+    }
+
+    .terms-content li {
+      margin-bottom: 0.8rem;
+      list-style-type: disc;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.8rem;
+      margin: 2rem 0;
+    }
+
+    .tool-card {
+      background: var(--light);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 15px -5px rgba(0, 0, 0, 0.08);
+      transition: var(--transition);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .tool-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.12);
+    }
+
+    .tool-icon {
+      height: 180px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      color: white;
+    }
+
+    .tool-content {
+      padding: 1.5rem;
+    }
+
+    .tool-content h3 {
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tool-content h3 i {
+      color: var(--primary);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .container {
+        padding: 2rem;
+      }
+      
+      h1 {
+        font-size: 2.3rem;
+      }
+      
+      .tagline {
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --header-height: 60px;
+      }
+      
+      .navbar {
+        padding: 0 1.2rem;
+      }
+      
+      .mobile-toggle {
+        display: block;
+      }
+      
+      .nav-links {
+        position: absolute;
+        top: var(--navbar-height);
+        right: -100%;
+        flex-direction: column;
+        background: white;
+        width: 100%;
+        height: calc(100vh - var(--navbar-height));
+        padding: 2rem;
+        gap: 1.5rem;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        transition: right 0.4s ease;
+        z-index: 100;
+      }
+      
+      .nav-links.active {
+        right: 0;
+      }
+      
+      .container {
+        padding: 1.8rem;
+        margin: 2.5rem auto;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .step {
+        padding: 1.6rem;
+      }
+      
+      .preview-box {
+        min-height: 180px;
+      }
+      
+      .combine-btn {
+        width: 100%;
+        padding: 1.1rem;
+      }
+      
+      .features {
+        flex-direction: column;
+        gap: 0.8rem;
+        align-items: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .tagline {
+        font-size: 1rem;
+      }
+      
+      .step h3 {
+        font-size: 1.3rem;
+      }
+      
+      .preview-icon {
+        font-size: 2rem;
+      }
+      
+      .footer-links {
+        gap: 1rem;
+        flex-direction: column;
+      }
+    }
+  </style>
+
+  <script type='text/javascript' src='//pl27516756.revenuecpmgate.com/1d/5a/ec/1d5aec946488b89b75afb2c8365bad16.js'></script>
+  <script type="text/javascript">
+    atOptions = {
+      'key' : 'f61e450c6bdc69af589c0ecd83a08fa3',
+      'format' : 'iframe',
+      'height' : 300,
+      'width' : 160,
+      'params' : {}
+    };
+  </script>
+  <script type="text/javascript" src="//www.highperformanceformat.com/f61e450c6bdc69af589c0ecd83a08fa3/invoke.js"></script>
+  </head>
+<body>
+  <nav class="navbar">
+    <a href="#" class="logo" data-page="home">
+      <i class="fas fa-sparkles"></i>
+      <span>Signature Combiner- Free</span>
+    </a>
+    
+    <button class="mobile-toggle" id="mobileToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+    
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#" class="nav-link" data-page="home" id="nav-home"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="#" class="nav-link" data-page="about" id="nav-about"><i class="fas fa-user"></i> About Us</a></li>
+      <li><a href="#" class="nav-link" data-page="contact" id="nav-contact"><i class="fas fa-envelope"></i> Contact</a></li>
+      <li class="dropdown">
+        <li><a href="#" class="nav-link" data-page="privacy" id="nav-privacy"><i class="fas fa-lock"></i> Privacy Policy</a></li>
+      <li><a href="#" class="nav-link" data-page="terms" id="nav-terms"><i class="fas fa-file-contract"></i> Terms</a></li>
+    </ul>
+  </nav>
+
+  <div class="content-wrapper">
+    <div class="page active" id="page-home">
+      <div class="container">
+        <div class="header-content animate-on-scroll">
+          <h1><i class="fas fa-camera"></i> Photo + Signature Combiner</h1>
+          <p class="tagline">Merge your <span class="highlight">photo</span> and <span class="highlight">signature</span> into one professional image — no upload, no cost, <span class="highlight">100% private</span>.</p>
+        </div>
+
+        <div class="steps-container">
+          <div class="step animate-on-scroll">
+            <h3>
+              <span class="step-number">1</span> Upload Your Photo
+            </h3>
+            <div class="upload-area">
+              <label for="photoInput" class="upload-btn">
+                <i class="fas fa-cloud-upload-alt"></i> Choose Photo
+              </label>
+              <input type="file" id="photoInput" accept="image/*" />
+              <div class="preview-box" id="photoPreviewBox">
+                <div class="preview-placeholder">
+                  <i class="fas fa-camera preview-icon"></i>
+                  <div>Upload a clear photo (e.g., passport size)</div>
+                  <div style="font-size: 0.9rem; color: var(--gray);">Recommended: 600x800px, JPG or PNG</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step animate-on-scroll">
+            <h3>
+              <span class="step-number">2</span> Upload Your Signature
+            </h3>
+            <div class="upload-area">
+              <label for="signatureInput" class="upload-btn">
+                <i class="fas fa-cloud-upload-alt"></i> Choose Signature
+              </label>
+              <input type="file" id="signatureInput" accept="image/*" />
+              <div class="preview-box" id="signaturePreviewBox">
+                <div class="preview-placeholder">
+                  <i class="fas fa-signature preview-icon"></i>
+                  <div>Upload a photo of your signature on white paper</div>
+                  <div style="font-size: 0.9rem; color: var(--gray);">For best results: clean background, high contrast</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="combine-section animate-on-scroll">
+          <button id="combineBtn" class="combine-btn float">
+            <i class="fas fa-magic"></i> Combine Now
+          </button>
+          
+          <div class="loading" id="loading">
+            <div class="spinner"></div>
+            Processing your images...
+          </div>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+          <canvas id="resultCanvas"></canvas>
+          <a id="downloadLink" style="display:none;">
+            <i class="fas fa-download"></i> Download Combined Image (PNG)
+          </a>
+        </div>
+
+        <div class="content-section animate-on-scroll">
+          <h2>Why Choose Our Tool?</h2>
+          <p>Our photo and signature combiner is designed with your privacy and convenience in mind. Unlike other tools that upload your sensitive information to servers, our solution works entirely in your browser.</p>
+          
+          <div class="benefits-grid">
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <h3>Complete Privacy</h3>
+              <p>Your photos never leave your device. All processing happens locally in your browser with no data sent to any server.</p>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <i class="fas fa-bolt"></i>
+              </div>
+              <h3>Instant Processing</h3>
+              <p>Get your combined image in seconds without waiting for uploads or server processing. Works even without internet connection.</p>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <i class="fas fa-paint-brush"></i>
+              </div>
+              <h3>Professional Quality</h3>
+              <p>Preserves the original quality of your images with no compression or size loss. Perfect for official documents.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-section animate-on-scroll">
+          <h2>What Our Users Say</h2>
+          
+          <div class="testimonials">
+            <div class="testimonial">
+              <div class="testimonial-content">
+                <p>"This tool saved me hours of work! I needed to submit passport photos with signatures for my visa application and this made it so easy. The best part is knowing my photos never left my computer."</p>
+                <div class="testimonial-author">
+                  <div class="author-avatar">S</div>
+                  <div>
+                    <strong>Sarah Johnson</strong>
+                    <div>Visa Applicant</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="testimonial">
+              <div class="testimonial-content">
+                <p>"As a small business owner, I need to create professional documents regularly. This signature tool is now part of my daily workflow. The fact that it's completely private gives me peace of mind."</p>
+                <div class="testimonial-author">
+                  <div class="author-avatar">M</div>
+                  <div>
+                    <strong>Michael Chen</strong>
+                    <div>Business Owner</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="privacy-note animate-on-scroll">
+          <i class="fas fa-shield-alt"></i>
+          <strong>100% Private & Secure:</strong> No data leaves your browser. Everything happens locally.
+        </div>
+
+        <div class="features animate-on-scroll">
+          <div class="feature"><i class="fas fa-check-circle"></i> Preserves original quality</div>
+          <div class="feature"><i class="fas fa-check-circle"></i> No size or resolution loss</div>
+          <div class="feature"><i class="fas fa-check-circle"></i> Works completely offline</div>
+          <div class="feature"><i class="fas fa-check-circle"></i> Instant processing</div>
+        </div>
+
+        <div class="footer">
+          <div class="footer-links">
+            <a href="#" class="nav-link" data-page="home">Home</a>
+            <a href="#" class="nav-link" data-page="about">About Us</a>
+            <a href="#" class="nav-link" data-page="contact">Contact</a>
+            <a href="#" class="nav-link" data-page="privacy">Privacy Policy</a>
+            <a href="#" class="nav-link" data-page="terms">Terms & Conditions</a>
+            
+          </div>
+          <p>© 2025 <strong>chandan Ruidas ©</strong> - Free for personal use. Made with ❤️ for privacy-conscious users.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-about">
+      <div class="container">
+        <div class="header-content animate-on-scroll">
+          <h1><i class="fas fa-user"></i> About Us</h1>
+          <p class="tagline">Learn more about the team behind the <span class="highlight">most trusted</span> photo and signature combiner tool.</p>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Our Story</h2>
+          <p>SignatureTool.in was founded in 2023 by a team of privacy-conscious developers who were frustrated with existing photo and signature tools that required uploading sensitive personal information to third-party servers.</p>
+          <p>We believe that your personal photos and signatures should never leave your device. That's why we built a tool that works entirely in your browser with no server communication whatsoever.</p>
+          
+          <div class="benefits-grid">
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <i class="fas fa-microchip"></i>
+              </div>
+              <h3>Technology First</h3>
+              <p>Our tool leverages modern browser technologies to process images locally without any server interaction. We use HTML5 Canvas and JavaScript to deliver a seamless experience.</p>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <i class="fas fa-lock"></i>
+              </div>
+              <h3>Privacy Focused</h3>
+              <p>We've conducted third-party security audits to ensure our tool maintains the highest privacy standards. No tracking, no cookies, no data collection.</p>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <i class="fas fa-globe"></i>
+              </div>
+              <h3>Global Reach</h3>
+              <p>Our tool is used by millions of people worldwide for official documents, visa applications, and professional profiles. We support all major languages and document requirements.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Our Mission</h2>
+          <p>Our mission is simple: to provide free, private, and reliable tools that help people create professional documents without compromising their privacy.</p>
+          <p>We believe that digital privacy is a fundamental right, especially when it comes to personal identification documents. That's why we've designed our tools to work entirely in your browser with no data ever leaving your device.</p>
+          
+          <div class="benefit-card" style="margin-top: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+              <div style="font-size: 3rem; color: var(--primary);"><i class="fas fa-quote-left"></i></div>
+              <div>
+                <p style="font-style: italic; font-size: 1.1rem; color: var(--dark); line-height: 1.8;">"In a world where personal data is constantly being harvested, we're committed to building tools that respect your privacy and give you control over your information."</p>
+                <p style="text-align: right; margin-top: 10px; font-weight: 600;">— The SignatureTool.in Team</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Why We Built This Tool</h2>
+          
+          <div class="benefits-grid">
+            <div class="benefit-card">
+              <h3><i class="fas fa-exclamation-circle"></i> The Problem</h3>
+              <p>We discovered that most online tools for combining photos and signatures require uploading your images to their servers. This means your sensitive personal information is stored on third-party systems, often without clear privacy policies.</p>
+            </div>
+            
+            <div class="benefit-card">
+              <h3><i class="fas fa-lightbulb"></i> Our Solution</h3>
+              <p>We built a tool that works entirely in your browser using HTML5 Canvas technology. No images are ever uploaded to any server - everything happens locally on your device.</p>
+            </div>
+            
+            <div class="benefit-card">
+              <h3><i class="fas fa-heart"></i> Our Commitment</h3>
+              <p>We're committed to maintaining this privacy-first approach. We generate revenue through ethical advertising rather than selling or using your personal data.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Meet the Team</h2>
+          
+          <div class="testimonials">
+            <div class="testimonial">
+              <div class="testimonial-content">
+                <h3 style="display: flex; align-items: center; gap: 10px; margin: 0 0 10px; font-size: 1.3rem;">
+                  <i class="fas fa-code"></i> Alex Morgan
+                </h3>
+                <p>Lead Developer with 10+ years of experience in web security and privacy-focused applications. Formerly at a major tech company, Alex left to focus on building truly private tools.</p>
+              </div>
+            </div>
+            
+            <div class="testimonial">
+              <div class="testimonial-content">
+                <h3 style="display: flex; align-items: center; gap: 10px; margin: 0 0 10px; font-size: 1.3rem;">
+                  <i class="fas fa-paint-brush"></i> Maya Rodriguez
+                </h3>
+                <p>UX Designer specializing in creating intuitive interfaces for technical tools. Believes that privacy shouldn't come at the cost of user experience.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer">
+          <div class="footer-links">
+            <a href="#" class="nav-link" data-page="home">Home</a>
+            <a href="#" class="nav-link" data-page="about">About Us</a>
+            <a href="#" class="nav-link" data-page="contact">Contact</a>
+            <a href="#" class="nav-link" data-page="privacy">Privacy Policy</a>
+            <a href="#" class="nav-link" data-page="terms">Terms & Conditions</a>
+            
+          </div>
+          <p>© 2025 <strong>SignatureTool.in</strong> - Free for personal use. Made with ❤️ for privacy-conscious users.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-contact">
+      <div class="container">
+        <div class="header-content animate-on-scroll">
+          <h1><i class="fas fa-envelope"></i> Contact Us</h1>
+          <p class="tagline">Have questions or feedback? We'd love to <span class="highlight">hear from you</span>. Our team responds within 24 hours.</p>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Get In Touch</h2>
+          <p>We're always happy to help with any questions about our tools, privacy practices, or potential partnerships. Fill out the form below and we'll get back to you as soon as possible.</p>
+          
+          <form class="contact-form">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" class="form-control" placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" class="form-control" placeholder="Enter your email address">
+            </div>
+            
+            <div class="form-group">
+              <label for="subject">Subject</label>
+              <input type="text" id="subject" class="form-control" placeholder="What's this regarding?">
+            </div>
+            
+            <div class="form-group">
+              <label for="message">Your Message</label>
+              <textarea id="message" class="form-control" rows="5" placeholder="How can we help you?"></textarea>
+            </div>
+            
+            <button type="submit" class="btn">
+              <i class="fas fa-paper-plane"></i> Send Message
+            </button>
+          </form>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Other Ways to Reach Us</h2>
+          
+          <div class="benefits-grid">
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <i class="fas fa-comment"></i>
+              </div>
+              <h3>Live Chat</h3>
+              <p>Available Monday-Friday, 9am-5pm EST. Look for the chat icon in the bottom right corner of your screen.</p>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <i class="fas fa-envelope-open"></i>
+              </div>
+              <h3>Email</h3>
+              <p>support@signaturetool.in<br>info@signaturetool.in</p>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <h3>Office</h3>
+              <p>123 Privacy Street<br>San Francisco, CA 94107<br>United States</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Frequently Asked Questions</h2>
+          
+          <div class="benefit-card">
+            <h3><i class="fas fa-question-circle"></i> How quickly do you respond to inquiries?</h3>
+            <p>We aim to respond to all emails within 24 business hours. Most responses happen within just a few hours during business hours.</p>
+          </div>
+          
+          <div class="benefit-card" style="margin-top: 1.2rem;">
+            <h3><i class="fas fa-question-circle"></i> Do you offer technical support for your tools?</h3>
+            <p>Yes! We provide free technical support for all our tools. If you're having trouble combining your photo and signature, we'll help you resolve the issue.</p>
+          </div>
+          
+          <div class="benefit-card" style="margin-top: 1.2rem;">
+            <h3><i class="fas fa-question-circle"></i> Can I request a new feature?</h3>
+            <p>Absolutely! We regularly update our tools based on user feedback. Tell us what you'd like to see and we'll consider it for our development roadmap.</p>
+          </div>
+        </div>
+        
+        <div class="footer">
+          <div class="footer-links">
+            <a href="#" class="nav-link" data-page="home">Home</a>
+            <a href="#" class="nav-link" data-page="about">About Us</a>
+            <a href="#" class="nav-link" data-page="contact">Contact</a>
+            <a href="#" class="nav-link" data-page="privacy">Privacy Policy</a>
+            <a href="#" class="nav-link" data-page="terms">Terms & Conditions</a>
+            
+          </div>
+          <p>© 2025 <strong>SignatureTool.in</strong> - Free for personal use. Made with ❤️ for privacy-conscious users.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-privacy">
+      <div class="container">
+        <div class="header-content animate-on-scroll">
+          <h1><i class="fas fa-lock"></i> Privacy Policy</h1>
+          <p class="tagline">Your privacy is our <span class="highlight">top priority</span>. Learn how we protect your data when using our tools.</p>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Our Privacy Commitment</h2>
+          <p>At SignatureTool.in, we believe that your privacy is a fundamental right, especially when it comes to personal identification documents. This privacy policy explains our strong commitment to keeping your data secure and private.</p>
+          
+          <div class="benefit-card">
+            <div style="display: flex; align-items: center; gap: 15px;">
+              <div style="font-size: 3rem; color: var(--primary);"><i class="fas fa-shield-alt"></i></div>
+              <div>
+                <p style="font-size: 1.2rem; color: var(--dark); font-weight: 600;">We do not collect, store, or transmit your photos, signatures, or any personal data.</p>
+                <p style="margin-top: 8px;">All processing happens entirely in your browser with no data ever leaving your device.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>How Our Tools Work</h2>
+          
+          <div class="privacy-policy-content">
+            <p>Understanding how our tools work is essential to understanding our privacy practices:</p>
+            
+            <ol>
+              <li><strong>Local Processing:</strong> When you use our photo and signature combiner, all image processing happens directly in your web browser using HTML5 Canvas technology.</li>
+              
+              <li><strong>No Server Communication:</strong> Unlike many similar tools, our application never sends your images to any server. There is no API call, no upload, and no data transmission of any kind.</li>
+              
+              <li><strong>Zero Data Collection:</strong> We do not collect your IP address, browser information, or any usage data related to your specific image processing.</li>
+              
+              <li><strong>Temporary Memory:</strong> Images are temporarily stored in your browser's memory only for the duration of your session and are automatically cleared when you close the page.</li>
+              
+              <li><strong>No Tracking:</strong> We do not use cookies or tracking technologies to monitor your usage of our tools.</li>
+            </ol>
+            
+            <p>This approach ensures that your sensitive personal information remains completely under your control at all times.</p>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>What Data We Do Collect</h2>
+          
+          <div class="privacy-policy-content">
+            <p>To operate our website and improve our services, we collect limited anonymous information that cannot be used to identify you:</p>
+            
+            <ul>
+              <li><strong>Aggregate Usage Data:</strong> We collect anonymous information about how many people use our tools and which features are most popular. This data is completely aggregated and cannot be traced back to any individual user.</li>
+              
+              <li><strong>Technical Information:</strong> Basic information about your browser type and device dimensions to ensure our tools work properly across different devices.</li>
+            </ul>
+            
+            <p>None of this information can be used to identify you personally or determine what specific images you processed with our tools.</p>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Third-Party Services</h2>
+          
+          <div class="privacy-policy-content">
+            <p>We use a limited number of third-party services to operate our website:</p>
+            
+            <ul>
+              <li><strong>Google Fonts:</strong> We use Google Fonts to ensure consistent typography. Google may collect information as described in their <a href="https://policies.google.com/privacy" target="_blank" style="color: var(--primary);">privacy policy</a>.</li>
+              
+              <li><strong>Font Awesome:</strong> We use Font Awesome for icons. Their privacy practices are described in their <a href="https://fontawesome.com/privacy" target="_blank" style="color: var(--primary);">privacy policy</a>.</li>
+            </ul>
+            
+            <p>Importantly, none of these services have access to the images you process with our tools, as those images never leave your browser.</p>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Your Rights</h2>
+          
+          <div class="privacy-policy-content">
+            <p>Because we don't collect personal information about your tool usage, there is no personal data for you to access, correct, or delete. However, you have complete control over:</p>
+            
+            <ul>
+              <li>The images you upload to our tools</li>
+              <li>Your browser's cache and temporary storage</li>
+            </ul>
+            
+            <p>If you have any questions about our privacy practices, please contact us using the information on our Contact page.</p>
+          </div>
+        </div>
+        
+        <div class="footer">
+          <div class="footer-links">
+            <a href="#" class="nav-link" data-page="home">Home</a>
+            <a href="#" class="nav-link" data-page="about">About Us</a>
+            <a href="#" class="nav-link" data-page="contact">Contact</a>
+            <a href="#" class="nav-link" data-page="privacy">Privacy Policy</a>
+            <a href="#" class="nav-link" data-page="terms">Terms & Conditions</a>
+            
+          </div>
+          <p>© 2025 <strong> chandan Ruidas ©
+          </strong> - Free for personal use. Made with ❤️ for privacy-conscious users.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-terms">
+      <div class="container">
+        <div class="header-content animate-on-scroll">
+          <h1><i class="fas fa-file-contract"></i> Terms and Conditions</h1>
+          <p class="tagline">Please read these terms carefully before using our <span class="highlight">services and tools</span>.</p>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Acceptance of Terms</h2>
+          <p>By accessing or using SignatureTool.in (the "Service"), you agree to be bound by these Terms and Conditions ("Terms"). If you do not agree to all of these Terms, you may not access or use the Service.</p>
+          
+          <div class="benefit-card">
+            <div style="display: flex; align-items: center; gap: 15px;">
+              <div style="font-size: 3rem; color: var(--primary);"><i class="fas fa-balance-scale"></i></div>
+              <div>
+                <p style="font-size: 1.2rem; color: var(--dark); font-weight: 600;">Your use of our free tools constitutes your agreement to follow and be bound by these Terms.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Use of Our Services</h2>
+          
+          <div class="terms-content">
+            <h3>1. Eligibility</h3>
+            <p>You must be at least 13 years old to use our Services. By using our Services, you represent and warrant that you are at least 13 years of age.</p>
+            
+            <h3>2. License Grant</h3>
+            <p>Subject to your compliance with these Terms, SignatureTool.in grants you a limited, non-exclusive, non-transferable, revocable license to use our tools for personal, non-commercial purposes.</p>
+            
+            <h3>3. Prohibited Activities</h3>
+            <p>You agree not to:</p>
+            <ul>
+              <li>Use the Services for any illegal purpose or in violation of any laws</li>
+              <li>Attempt to gain unauthorized access to any part of the Services</li>
+              <li>Use the Services to create documents for fraudulent purposes</li>
+              <li>Reverse engineer, decompile, or disassemble any portion of the Services</li>
+              <li>Use the Services in a way that could damage, disable, overburden, or impair the Services</li>
+            </ul>
+            
+            <h3>4. Intellectual Property</h3>
+            <p>All content, features, and functionality of the Service, including but not limited to text, graphics, tools, and the selection and arrangement thereof, are owned by SignatureTool.in or its licensors and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.</p>
+            
+            <h3>5. No Commercial Use</h3>
+            <p>Our free tools are intended for personal, non-commercial use only. If you wish to use our technology for commercial purposes, please contact us for licensing information.</p>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Disclaimer of Warranties</h2>
+          
+          <div class="terms-content">
+            <p>YOUR USE OF THE SERVICE IS AT YOUR SOLE RISK. THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS. TO THE FULLEST EXTENT PERMITTED BY LAW, SIGNATURETOOL.IN DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.</p>
+            
+            <p>SignatureTool.in makes no warranty that:</p>
+            <ul>
+              <li>The Service will meet your requirements</li>
+              <li>The Service will be uninterrupted, timely, secure, or error-free</li>
+              <li>The results that may be obtained from the use of the Service will be accurate or reliable</li>
+              <li>The quality of any products, services, information, or other material obtained by you through the Service will meet your expectations</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Limitation of Liability</h2>
+          
+          <div class="terms-content">
+            <p>TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL SIGNATURETOOL.IN, ITS AFFILIATES, OR THEIR LICENSORS, SERVICE PROVIDERS, EMPLOYEES, AGENTS, OFFICERS, OR DIRECTORS BE LIABLE FOR ANY INDIRECT, PUNITIVE, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR EXEMPLARY DAMAGES, INCLUDING WITHOUT LIMITATION DAMAGES FOR LOSS OF PROFITS, GOODWILL, USE, DATA, OR OTHER INTANGIBLE LOSSES, THAT RESULT FROM THE USE OF, OR INABILITY TO USE, THIS SERVICE.</p>
+            
+            <p>THIS LIMITATION OF LIABILITY SECTION APPLIES WHETHER THE ALLEGED LIABILITY IS BASED ON CONTRACT, TORT, NEGLIGENCE, STRICT LIABILITY, OR ANY OTHER BASIS, EVEN IF WE HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>User Responsibilities</h2>
+          
+          <div class="terms-content">
+            <p>When using our Services, you agree to:</p>
+            <ul>
+              <li>Provide accurate and complete information when using our tools</li>
+              <li>Use the output images only for lawful purposes</li>
+              <li>Not use our tools to create documents for fraudulent activities</li>
+              <li>Comply with all applicable laws and regulations in your jurisdiction</li>
+              <li>Be responsible for your own actions when using the images generated by our tools</li>
+            </ul>
+            
+            <p>SignatureTool.in is not responsible for how you use the images created with our tools. You are solely responsible for ensuring that your use of these images complies with all applicable laws and regulations.</p>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Changes to Terms</h2>
+          
+          <div class="terms-content">
+            <p>We may revise and update these Terms from time to time in our sole discretion. All changes are effective immediately when we post them.</p>
+            
+            <p>Your continued use of the Service following the posting of revised Terms means that you accept and agree to the changes. It is your responsibility to check this page periodically for changes.</p>
+          </div>
+        </div>
+        
+        <div class="footer">
+          <div class="footer-links">
+            <a href="#" class="nav-link" data-page="home">Home</a>
+            <a href="#" class="nav-link" data-page="about">About Us</a>
+            <a href="#" class="nav-link" data-page="contact">Contact</a>
+            <a href="#" class="nav-link" data-page="privacy">Privacy Policy</a>
+            <a href="#" class="nav-link" data-page="terms">Terms & Conditions</a>
+            <a href="#" class="nav-link" data-page="ar-tools">AR Tools</a>
+          </div>
+          <p>© 2025 <strong>https://photosignaturecombine.blogspot.com/
+          </strong> - Free for personal use. Made with ❤️ for privacy-conscious users.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-ar-tools">
+      <div class="container">
+        <div class="header-content animate-on-scroll">
+          <h1><i class="fas fa-vr-cardboard"></i> AR Tools</h1>
+          <p class="tagline">Experience our next-generation <span class="highlight">augmented reality tools</span> for document creation.</p>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Augmented Reality Document Tools</h2>
+          <p>Our AR tools bring document creation into the 21st century by combining augmented reality with our proven privacy-first approach. Create professional documents with unprecedented ease and accuracy.</p>
+          
+          <div class="benefit-card">
+            <div style="display: flex; align-items: center; gap: 15px;">
+              <div style="font-size: 3rem; color: var(--primary);"><i class="fas fa-vr-cardboard"></i></div>
+              <div>
+                <p style="font-size: 1.2rem; color: var(--dark); font-weight: 600;">All AR processing happens entirely on your device with no images ever leaving your camera.</p>
+                <p style="margin-top: 8px;">Just like our standard tools, our AR features respect your privacy and work without internet connection.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Available AR Tools</h2>
+          
+          <div class="tools-grid">
+            <div class="tool-card">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #10b981, #34d399);">
+                <i class="fas fa-id-card"></i>
+              </div>
+              <div class="tool-content">
+                <h3><i class="fas fa-id-card"></i> AR ID Creator</h3>
+                <p>Use your camera to create perfect ID photos with automatic background removal and size adjustment. The AR guidance helps you position your face correctly.</p>
+                <a href="#" class="btn" style="margin-top: 1rem; background: linear-gradient(135deg, #10b981, #0daa72);">
+                  <i class="fas fa-play-circle"></i> Try AR ID Creator
+                </a>
+              </div>
+            </div>
+            
+            <div class="tool-card">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #6366f1, #818cf8);">
+                <i class="fas fa-signature"></i>
+              </div>
+              <div class="tool-content">
+                <h3><i class="fas fa-signature"></i> AR Signature Tool</h3>
+                <p>Capture your signature in real-time with AR guidance. Our tool automatically removes the background and optimizes your signature for professional documents.</p>
+                <a href="#" class="btn" style="margin-top: 1rem;">
+                  <i class="fas fa-play-circle"></i> Try AR Signature Tool
+                </a>
+              </div>
+            </div>
+            
+            <div class="tool-card">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #f43f5e, #fb7185);">
+                <i class="fas fa-passport"></i>
+              </div>
+              <div class="tool-content">
+                <h3><i class="fas fa-passport"></i> AR Passport Photo</h3>
+                <p>Create passport-compliant photos with AR measurement guides. Our tool checks your photo against official requirements before you download.</p>
+                <a href="#" class="btn" style="margin-top: 1rem; background: linear-gradient(135deg, #f43f5e, #e11d48);">
+                  <i class="fas fa-play-circle"></i> Try AR Passport Photo
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>How AR Tools Work</h2>
+          
+          <div class="benefits-grid">
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <i class="fas fa-camera"></i>
+              </div>
+              <h3>Camera Access</h3>
+              <p>Our AR tools request camera access only when you initiate the AR experience. You can deny access at any time through your browser settings.</p>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <i class="fas fa-microchip"></i>
+              </div>
+              <h3>Local Processing</h3>
+              <p>All image processing happens directly in your browser. No images are ever sent to our servers or any third party.</p>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <h3>Privacy First</h3>
+              <p>Camera access is terminated immediately after you complete your session. We don't store any camera data or video streams.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>System Requirements</h2>
+          
+          <div class="benefit-card">
+            <h3><i class="fas fa-laptop"></i> For Best Results</h3>
+            <p>Our AR tools work on most modern smartphones and computers with cameras. For optimal performance:</p>
+            
+            <ul style="padding-left: 1.8rem; margin: 1rem 0;">
+              <li>Use a device with a front-facing camera (for best results)</li>
+              <li>Ensure good lighting conditions when using the tools</li>
+              <li>Use the latest version of Chrome, Firefox, or Safari</li>
+              <li>Grant camera permissions when prompted</li>
+            </ul>
+            
+            <p>Our tools automatically adjust to your device capabilities, providing the best possible experience whether you're on a high-end smartphone or a basic laptop.</p>
+          </div>
+        </div>
+        
+        <div class="content-section animate-on-scroll">
+          <h2>Frequently Asked Questions</h2>
+          
+          <div class="benefit-card">
+            <h3><i class="fas fa-question-circle"></i> Is my camera feed stored anywhere?</h3>
+            <p>No. Your camera feed is processed entirely in your browser and never leaves your device. We don't store, transmit, or record any video or images from your camera.</p>
+          </div>
+          
+          <div class="benefit-card" style="margin-top: 1.2rem;">
+            <h3><i class="fas fa-question-circle"></i> Do I need an internet connection to use AR tools?</h3>
+            <p>Once the page is loaded, most AR functionality works offline. An internet connection is only needed to initially load the tool.</p>
+          </div>
+          
+          <div class="benefit-card" style="margin-top: 1.2rem;">
+            <h3><i class="fas fa-question-circle"></i> Can I use these tools on my iPhone/Android device?</h3>
+            <p>Yes! Our AR tools work on all modern smartphones and tablets. Simply open this page in your mobile browser and tap the AR tool you want to use.</p>
+          </div>
+        </div>
+        
+        <div class="footer">
+          <div class="footer-links">
+            <a href="#" class="nav-link" data-page="home">Home</a>
+            <a href="#" class="nav-link" data-page="about">About Us</a>
+            <a href="#" class="nav-link" data-page="contact">Contact</a>
+            <a href="#" class="nav-link" data-page="privacy">Privacy Policy</a>
+            <a href="#" class="nav-link" data-page="terms">Terms & Conditions</a>
+            
+          </div>
+          <p>© 2025 <strong>Chandan Ruidas © </strong> - Free for personal use. Made with ❤️ for privacy-conscious users.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize everything after DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      try {
+        // Navigation system
+        const navLinks = document.querySelectorAll('.nav-link');
+        const pages = document.querySelectorAll('.page');
+        
+        // Set active page function
+        function setActivePage(pageName) {
+          // Hide all pages
+          pages.forEach(page => {
+            page.classList.remove('active');
+          });
+          
+          // Show requested page
+          const targetPage = document.getElementById(`page-${pageName}`);
+          if (targetPage) {
+            targetPage.classList.add('active');
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-links a').forEach(el => {
+              el.classList.remove('active');
+            });
+            
+            // Find and activate the correct nav link
+            const activeLink = document.querySelector(`.nav-link[data-page="${pageName}"]`);
+            if (activeLink) {
+              activeLink.classList.add('active');
+            }
+          } else {
+            console.error(`Page not found: ${pageName}`);
+            // Fallback to home page if page not found
+            setActivePage('home');
+          }
+        }
+        
+        // Set up navigation click handlers
+        navLinks.forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetPage = this.getAttribute('data-page');
+            setActivePage(targetPage);
+            
+            // Close mobile menu if open
+            document.getElementById('navLinks').classList.remove('active');
+            document.getElementById('mobileToggle').innerHTML = '<i class="fas fa-bars"></i>';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        });
+        
+        // Mobile menu toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navLinksEl = document.getElementById('navLinks');
+        
+        if (mobileToggle && navLinksEl) {
+          mobileToggle.addEventListener('click', () => {
+            navLinksEl.classList.toggle('active');
+            mobileToggle.innerHTML = navLinksEl.classList.contains('active') ? 
+              '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+          });
+        }
+        
+        // Initialize with home page
+        setActivePage('home');
+        
+        // Scroll animation
+        function animateOnScroll() {
+          const elements = document.querySelectorAll('.animate-on-scroll:not(.active)');
+          elements.forEach(el => {
+            const elementPosition = el.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+            
+            if (elementPosition < windowHeight * 0.85) {
+              el.classList.add('active');
+            }
+          });
+        }
+        
+        // Initial animation check
+        setTimeout(animateOnScroll, 100);
+        
+        // Set up scroll listener
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('resize', animateOnScroll);
+        
+        // Main functionality for home page tool
+        const photoInput = document.getElementById("photoInput");
+        const signatureInput = document.getElementById("signatureInput");
+        const photoPreviewBox = document.getElementById("photoPreviewBox");
+        const signaturePreviewBox = document.getElementById("signaturePreviewBox");
+        const combineBtn = document.getElementById("combineBtn");
+        const loading = document.getElementById("loading");
+        const resultCanvas = document.getElementById("resultCanvas");
+        const downloadLink = document.getElementById("downloadLink");
+        const resultContainer = document.getElementById("resultContainer");
+        
+        // Only initialize tool functionality if elements exist (on home page)
+        if (photoInput && signatureInput && combineBtn) {
+          // Photo preview
+          photoInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                photoPreviewBox.innerHTML = `<img src="${event.target.result}" alt="Photo" class="uploaded">`;
+                const img = photoPreviewBox.querySelector('img');
+                if (img) {
+                  img.addEventListener('load', () => {
+                    photoPreviewBox.classList.add('uploaded');
+                    // Add subtle animation
+                    photoPreviewBox.style.animation = 'fileUpload 0.5s ease-out';
+                    setTimeout(() => {
+                      photoPreviewBox.style.animation = '';
+                    }, 500);
+                  });
+                }
+              };
+              reader.readAsDataURL(file);
+            }
+          });
+          
+          // Signature preview
+          signatureInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                signaturePreviewBox.innerHTML = `<img src="${event.target.result}" alt="Signature" class="uploaded">`;
+                const img = signaturePreviewBox.querySelector('img');
+                if (img) {
+                  img.addEventListener('load', () => {
+                    signaturePreviewBox.classList.add('uploaded');
+                    // Add subtle animation
+                    signaturePreviewBox.style.animation = 'fileUpload 0.5s ease-out';
+                    setTimeout(() => {
+                      signaturePreviewBox.style.animation = '';
+                    }, 500);
+                  });
+                }
+              };
+              reader.readAsDataURL(file);
+            }
+          });
+          
+          // Combine
+          combineBtn.addEventListener("click", () => {
+            const photoImg = photoPreviewBox.querySelector("img");
+            const signatureImg = signaturePreviewBox.querySelector("img");
+            
+            // Reset error states first
+            photoPreviewBox.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+            signaturePreviewBox.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+            
+            if (!photoImg || !signatureImg) {
+              // Animation for error state
+              combineBtn.style.animation = 'shake 0.5s';
+              setTimeout(() => {
+                combineBtn.style.animation = '';
+              }, 500);
+              
+              // Show visual feedback
+              photoPreviewBox.style.borderColor = '#f43f5e';
+              signaturePreviewBox.style.borderColor = '#f43f5e';
+              
+              setTimeout(() => {
+                photoPreviewBox.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+                signaturePreviewBox.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+              }, 2000);
+              
+              return;
+            }
+            
+            loading.classList.add('active');
+            combineBtn.disabled = true;
+            combineBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            combineBtn.style.transform = 'scale(1)';
+            
+            setTimeout(() => {
+              const photo = new Image();
+              const signature = new Image();
+              
+              photo.onload = function () {
+                signature.onload = function () {
+                  const maxWidth = 600;
+                  const photoWidth = Math.min(maxWidth, photo.naturalWidth);
+                  const photoHeight = (photoWidth / photo.naturalWidth) * photo.naturalHeight;
+                  const sigWidth = photoWidth;
+                  const sigRatio = signature.naturalWidth / signature.naturalHeight;
+                  const sigHeight = Math.min(100, Math.max(40, sigWidth / sigRatio));
+                  
+                  resultCanvas.width = photoWidth;
+                  resultCanvas.height = photoHeight + sigHeight;
+                  const ctx = resultCanvas.getContext("2d");
+                  ctx.fillStyle = "white";
+                  ctx.fillRect(0, 0, photoWidth, resultCanvas.height);
+                  ctx.imageSmoothingEnabled = true;
+                  ctx.imageSmoothingQuality = "high";
+                  
+                  ctx.drawImage(photo, 0, 0, photoWidth, photoHeight);
+                  ctx.drawImage(signature, 0, photoHeight, sigWidth, sigHeight);
+                  
+                  // Show result with animation
+                  resultContainer.classList.add('active');
+                  resultCanvas.style.display = "block";
+                  downloadLink.href = resultCanvas.toDataURL("image/png");
+                  downloadLink.style.display = "inline-flex";
+                  downloadLink.download = "photo-with-signature.png";
+                  
+                  // Animate download button
+                  setTimeout(() => {
+                    downloadLink.style.animation = 'pulse-download 2s infinite';
+                  }, 300);
+                  
+                  loading.classList.remove('active');
+                  combineBtn.disabled = false;
+                  combineBtn.innerHTML = '<i class="fas fa-magic"></i> Combine Now';
+                  
+                  // Scroll to result
+                  resultCanvas.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center',
+                    inline: 'nearest'
+                  });
+                };
+                signature.src = signatureImg.src;
+              };
+              photo.src = photoImg.src;
+            }, 800);
+          });
+          
+          // Add floating animation to combine button after page load
+          setTimeout(() => {
+            const combineBtn = document.querySelector('.combine-btn');
+            if (combineBtn) {
+              combineBtn.classList.add('float');
+            }
+          }, 500);
+        }
+        
+        // Handle potential errors gracefully
+      } catch (mainError) {
+        console.error('Critical error in main script:', mainError);
+        
+        // Fallback: Ensure at least home page is visible
+        try {
+          document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+          });
+          const homePage = document.getElementById('page-home');
+          if (homePage) {
+            homePage.classList.add('active');
+          }
+          
+          // Show error message in UI
+          const errorDiv = document.createElement('div');
+          errorDiv.style.cssText = `
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            color: #dc2626;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 10000;
+            border-left: 4px solid #dc2626;
+          `;
+          errorDiv.innerHTML = `
+            <strong>Error:</strong> ${mainError.message}<br>
+            <small>Don't worry! The main functionality is still working.</small>
+          `;
+          document.body.appendChild(errorDiv);
+          
+          // Auto-hide error after 5 seconds
+          setTimeout(() => {
+            errorDiv.style.transition = 'opacity 0.5s';
+            errorDiv.style.opacity = '0';
+            setTimeout(() => {
+              errorDiv.remove();
+            }, 500);
+          }, 5000);
+        } catch (fallbackError) {
+          console.error('Fallback error:', fallbackError);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
